@@ -38,13 +38,16 @@ const registerUser = asyncHandler(async (req, res) => {
 
   generateToken(res, user._id);
   return res.status(200).json({ message: "Registered User", data: { user } });
-  // throw new Error("Invalid user data");
 });
 
 //@desc     Logout user
 //route     POST /api/users/logout
 //@access   Public
 const logoutUser = asyncHandler(async (req, res) => {
+  res.cookie("jwt", " ", {
+    httpOnly: true,
+    expires: new Date(),
+  });
   return res.status(200).json({ message: "User is logged out User" });
 });
 
