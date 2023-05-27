@@ -1,13 +1,61 @@
-//@desc     Auth user/set tokens
-//route     POST /api/user/auth
-//@access   Public
-
 import asyncHandler from "express-async-handler";
-
+import User from "../model/userModel.js";
+//@desc     Auth users/set tokens
+//route     POST /api/users/auth
+//@access   Public
 const authUser = asyncHandler(async (req, res) => {
-  //   res.status(401);
-  //   throw Error("something is happened");
   return res.status(200).json({ message: "Auth User" });
 });
 
-export { authUser };
+//@desc     Register user
+//route     POST /api/users
+//@access   Public
+const registerUser = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  const { name, email, password } = req.body;
+
+  const userExist = await User.findOne({ email });
+  if (userExist) {
+    res.status(400);
+    throw new Error("User is already exist");
+  } else {
+  }
+  const user = await User.create({ name, email, password });
+  if (user) {
+    return res.status(200).json({ message: "Registered User", data: { user } });
+    // throw new Error("Invalid user data");
+  } else {
+    res.status(400);
+    console.log("invalid user data");
+  }
+});
+
+//@desc     Logout user
+//route     POST /api/users/logout
+//@access   Public
+const logoutUser = asyncHandler(async (req, res) => {
+  return res.status(200).json({ message: "User is logged out User" });
+});
+
+//@desc     GEt user aprofile
+//route     Get /api/users/profile
+//@access   Private
+
+const getUserProfile = asyncHandler(async (req, res) => {
+  return res.status(200).json({ message: " Get User  Profile" });
+});
+
+//@desc     GEt user profile
+//route     Get /api/users/profile
+//@access   Private
+const updateUserProfile = asyncHandler(async (req, res) => {
+  return res.status(200).json({ message: "Update User  Profile" });
+});
+
+export {
+  authUser,
+  registerUser,
+  logoutUser,
+  getUserProfile,
+  updateUserProfile,
+};
