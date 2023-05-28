@@ -67,7 +67,29 @@ const getUserProfile = asyncHandler(async (req, res) => {
 //route     Get /api/users/profile
 //@access   Private
 const updateUserProfile = asyncHandler(async (req, res) => {
-  return res.status(200).json({ message: "Update User  Profile" });
+  // console.log(req.user);
+  const user = await User.findById(req.user._id);
+  if (user) {
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.name;
+
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+
+    user.save();
+    return res.status(200).json({
+      message: "Update User  Profile",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } else {
+    res.status(401);
+    throw new Error("User not found");
+  }
 });
 
 export {
