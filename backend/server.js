@@ -18,6 +18,7 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 8000;
 console.log("port", process.env.PORT);
+console.log("port", process.env.JWT_SECRET);
 
 //Parsing body
 app.use(express.json());
