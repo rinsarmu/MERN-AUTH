@@ -45,7 +45,7 @@ const LoginScreen =()=>{
 
                 <Row className="py-3">
                     <Col>
-                    Don't have an account? <Link to='/register'>Register</Link>
+                    Do not have an account? <Link to='/register'>Register</Link>
                     </Col>
                 </Row>
             </Form>
