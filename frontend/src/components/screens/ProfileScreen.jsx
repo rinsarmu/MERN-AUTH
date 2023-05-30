@@ -6,15 +6,18 @@ import {toast} from 'react-toastify'
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCredentials } from "../../slices/authSlice";
+import { useUpdateProfileMutation } from "../../slices/userApiSlice";
 
 const ProfileScreen =()=>{
     const[name, setName]= useState('')
     const[email, setEmail]= useState('')
     const [password, setPassword] = useState('')
+    const [oldPassword, setOldPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [updateProfile] = useUpdateProfileMutation()
 
     const { userInfo } = useSelector((state) => state.auth);
     const {user} = userInfo
@@ -22,20 +25,24 @@ const ProfileScreen =()=>{
     useEffect(() => {
       setName(user.name)
       setEmail(user.email)
-    }, [userInfo]);
+    }, [navigate, userInfo]);
 
     const submitHandler = async(e)=>{
         e.preventDefault();
-        if(!password || confirmPassword !== password){
+        if(confirmPassword !== password){
             toast.error('Password do not match')
             return;
 
         }
 
         try{
+          const res = await updateProfile({name,email,oldPassword,password}).unwrap()
+          dispatch(setCredentials({...res}))
+          toast.success('Profile is updated successfully');
+
 
         }catch(err){
-          toast.error(err?.data.message || err.error)
+          toast.error(err?.data?.message || err.error)
         }
 
         
@@ -68,8 +75,22 @@ const ProfileScreen =()=>{
                     </Form.Control>
                 </Form.Group>
 
-                <Form.Group className="my-2" controlId="password">
-                    <Form.Label>Password</Form.Label>
+               
+
+                <Form.Group className="my-2" controlId="oldPassword">
+                    <Form.Label>Old Password</Form.Label>
+                    <Form.Control 
+                        type="password" 
+                        value={oldPassword}
+                        placeholder="Enter old password"
+                        onChange={(e)=>setOldPassword(e.target.value)}
+
+                        >
+
+                    </Form.Control>
+
+                    <Form.Group className="my-2" controlId="password">
+                    <Form.Label>New Password</Form.Label>
                     <Form.Control 
                         type="password" 
                         value={password}
@@ -79,6 +100,8 @@ const ProfileScreen =()=>{
                         >
 
                     </Form.Control>
+                </Form.Group>
+
                 </Form.Group>
 
                 <Form.Group className="my-2" controlId="password">

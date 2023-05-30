@@ -27,6 +27,7 @@ app.use(express.urlencoded({ extended: false }));
 //Parsing cookies
 app.use(cookieParser());
 
+app.use("/hello", (req, res, next) => {});
 app.use("/api/users", userRoute);
 app.use("*", notFound);
 app.use(errorHandler);

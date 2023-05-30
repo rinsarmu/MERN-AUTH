@@ -32,8 +32,16 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+userSchema.pre("findOneAndUpdate", async function (next) {
+  console.log("find and update");
+
+  next();
+});
+
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  const pwd = await bcrypt.compare(enteredPassword, this.password);
+  console.log("pwdpwd.............pwd", pwd);
+  return pwd;
 };
 
 const User = mongoose.model("User", userSchema);
