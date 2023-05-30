@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import {Link } from 'react-router-dom'
-import {Form, Button, Col, Row, } from 'react-bootstrap'
+import {Form, Button } from 'react-bootstrap'
 import FormContainer from "../FormContainer";
 import {toast} from 'react-toastify'
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useRegisterMutation } from "../../slices/userApiSlice";
 import { setCredentials } from "../../slices/authSlice";
-import Loader from "../Loader";
 
-const RegisterScreen =()=>{
+const ProfileScreen =()=>{
     const[name, setName]= useState('')
     const[email, setEmail]= useState('')
     const [password, setPassword] = useState('')
@@ -18,14 +16,13 @@ const RegisterScreen =()=>{
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const [register,{isLoading}] = useRegisterMutation();
     const { userInfo } = useSelector((state) => state.auth);
+    const {user} = userInfo
 
     useEffect(() => {
-      if (userInfo) {
-        navigate('/');
-      }
-    }, [navigate, userInfo]);
+      setName(user.name)
+      setEmail(user.email)
+    }, [userInfo]);
 
     const submitHandler = async(e)=>{
         e.preventDefault();
@@ -36,18 +33,18 @@ const RegisterScreen =()=>{
         }
 
         try{
-            const res = await register({name,email,password}).unwrap()
-            dispatch(setCredentials({...res}))
-            navigate('/')
-        } catch(err){
-            toast.error(err?.data?.message || err.error)
+
+        }catch(err){
+          toast.error(err?.data.message || err.error)
         }
+
+        
 
     }
     return(
         <FormContainer>
             <Form onSubmit={submitHandler}>
-                <h1>Register</h1>
+                <h1>Profile</h1>
                 <Form.Group className="my-2" controlId="name">
                     <Form.Label>Name</Form.Label>
                     <Form.Control 
@@ -97,20 +94,13 @@ const RegisterScreen =()=>{
                     </Form.Control>
                 </Form.Group>
                 <Button variant="primary" type='submit' className='mt-3'>
-                    Register
+                    Update
                 </Button>
 
-                {isLoading && <Loader />}
-
-                <Row className="py-3">
-                    <Col>
-                    Aleady have an account? <Link to='/login'>Log in</Link>
-                    </Col>
-                </Row>
             </Form>
 
         </FormContainer>
     )
 }
 
-export default RegisterScreen
+export default ProfileScreen

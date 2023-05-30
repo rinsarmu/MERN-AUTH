@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLoginMutation } from "../../slices/userApiSlice";
 import { setCredentials } from "../../slices/authSlice";
 import { toast } from 'react-toastify';
+import Loader from "../Loader";
 
 const LoginScreen =()=>{
     const[email, setEmail]= useState('')
@@ -64,6 +65,8 @@ const LoginScreen =()=>{
                 <Button variant="primary" type='submit' className='mt-3'>
                     Log in
                 </Button>
+
+                {isLoading && <Loader />}
 
                 <Row className="py-3">
                     <Col>
